@@ -11,12 +11,21 @@ const useVapi = () => {
   const [conversation, setConversation] = useState<
     { role: string; text: string; timestamp: string; isFinal: boolean }[]
   >([]);
-  const vapiRef = useRef<any>(null);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  type MinimalVapi = {
+    on: (event: string, handler: (arg?: unknown) => void) => unknown;
+    start?: (assistantId: string) => Promise<void>;
+    stop?: () => Promise<void> | void;
+    setMuted?: (muted: boolean) => void;
+    say?: (text: string, endAfter?: boolean) => void;
+    send?: (payload: unknown) => void;
+  };
+  const vapiRef = useRef<MinimalVapi | null>(null);
 
   const initializeVapi = useCallback(() => {
     if (!vapiRef.current) {
-      const vapiInstance = new Vapi(publicKey);
-      vapiRef.current = vapiInstance;
+  const vapiInstance = new Vapi(publicKey);
+  vapiRef.current = vapiInstance as unknown as MinimalVapi;
 
       vapiInstance.on("call-start", () => {
         setIsSessionActive(true);
@@ -31,27 +40,34 @@ const useVapi = () => {
         setVolumeLevel(volume);
       });
 
-      vapiInstance.on("message", (message: any) => {
-        if (message.type === "transcript") {
+      type TranscriptType = 'partial' | 'final';
+      type TranscriptMsg = { type: 'transcript'; role: string; transcript: string; transcriptType: TranscriptType };
+      type FunctionCallMsg = { type: 'function-call'; functionCall: { name: string; parameters: { url?: string } } };
+      type VapiMessage = TranscriptMsg | FunctionCallMsg | { type: string; [k: string]: unknown };
+
+      vapiInstance.on("message", (message: unknown) => {
+        const msg = message as VapiMessage;
+        if (msg.type === "transcript") {
+          const t = msg as TranscriptMsg;
           setConversation((prev) => {
             const timestamp = new Date().toLocaleTimeString();
             const updatedConversation = [...prev];
-            if (message.transcriptType === "final") {
+            if (t.transcriptType === "final") {
               // Find the partial message to replace it with the final one
               const partialIndex = updatedConversation.findIndex(
-                (msg) => msg.role === message.role && !msg.isFinal,
+                (m) => m.role === t.role && !m.isFinal,
               );
               if (partialIndex !== -1) {
                 updatedConversation[partialIndex] = {
-                  role: message.role,
-                  text: message.transcript,
+                  role: t.role,
+                  text: t.transcript,
                   timestamp: updatedConversation[partialIndex].timestamp,
                   isFinal: true,
                 };
               } else {
                 updatedConversation.push({
-                  role: message.role,
-                  text: message.transcript,
+                  role: t.role,
+                  text: t.transcript,
                   timestamp,
                   isFinal: true,
                 });
@@ -59,17 +75,17 @@ const useVapi = () => {
             } else {
               // Add partial message or update the existing one
               const partialIndex = updatedConversation.findIndex(
-                (msg) => msg.role === message.role && !msg.isFinal,
+                (m) => m.role === t.role && !m.isFinal,
               );
               if (partialIndex !== -1) {
                 updatedConversation[partialIndex] = {
                   ...updatedConversation[partialIndex],
-                  text: message.transcript,
+                  text: t.transcript,
                 };
               } else {
                 updatedConversation.push({
-                  role: message.role,
-                  text: message.transcript,
+                  role: t.role,
+                  text: t.transcript,
                   timestamp,
                   isFinal: false,
                 });
@@ -80,10 +96,10 @@ const useVapi = () => {
         }
 
         if (
-          message.type === "function-call" &&
-          message.functionCall.name === "changeUrl"
+          msg.type === "function-call" &&
+          (msg as FunctionCallMsg).functionCall?.name === "changeUrl"
         ) {
-          const command = message.functionCall.parameters.url.toLowerCase();
+          const command = String((msg as FunctionCallMsg).functionCall.parameters?.url || '').toLowerCase();
           console.log(command);
           if (command) {
             window.location.href = command;
@@ -104,27 +120,59 @@ const useVapi = () => {
 
     // Cleanup function to end call and dispose Vapi instance
     return () => {
-      if (vapiRef.current) {
-        vapiRef.current.stop();
-        vapiRef.current = null;
-      }
+    try { vapiRef.current?.stop?.(); } catch {}
+    vapiRef.current = null;
     };
   }, [initializeVapi]);
 
+  const checkAudioSupport = async () => {
+    if (typeof window === 'undefined') return 'Unsupported environment';
+    if (window.isSecureContext === false) {
+      return 'Microphone requires HTTPS (secure context).';
+    }
+  const md: MediaDevices | undefined = (navigator as Navigator & { mediaDevices?: MediaDevices }).mediaDevices;
+  const hasMedia = !!(md && typeof md.getUserMedia === 'function');
+    if (!hasMedia) {
+      return 'This browser does not support microphone access (getUserMedia).';
+    }
+    try {
+      // Probe permissions without prompting if possible
+      const permsAPI = (navigator as Navigator & { permissions?: { query?: (q: { name: PermissionName }) => Promise<PermissionStatus> } }).permissions;
+      if (permsAPI?.query) {
+        const status = await permsAPI.query({ name: 'microphone' as PermissionName });
+        if (status.state === 'denied') {
+          return 'Microphone permission is denied in browser settings.';
+        }
+      }
+    } catch {}
+    return null;
+  };
+
   const toggleCall = async () => {
     try {
+      setVoiceError(null);
       if (isSessionActive) {
-        await vapiRef.current.stop();
+        if (vapiRef.current?.stop) await vapiRef.current.stop();
       } else {
-        await vapiRef.current.start(assistantId);
+        const supportErr = await checkAudioSupport();
+        if (supportErr) {
+          setVoiceError(supportErr);
+          return;
+        }
+        if (!publicKey || !assistantId) {
+          setVoiceError('Missing Vapi configuration. Set NEXT_PUBLIC_VAPI_PUBLIC_KEY and NEXT_PUBLIC_VAPI_ASSISTANT_ID.');
+          return;
+        }
+        if (vapiRef.current?.start) await vapiRef.current.start(assistantId);
       }
     } catch (err) {
       console.error("Error toggling Vapi session:", err);
+      setVoiceError((err as Error)?.message || 'Unknown voice error.');
     }
   };
 
   const sendMessage = (role: string, content: string) => {
-    if (vapiRef.current) {
+    if (vapiRef.current?.send) {
       vapiRef.current.send({
         type: "add-message",
         message: { role, content },
@@ -133,13 +181,13 @@ const useVapi = () => {
   };
 
   const say = (message: string, endCallAfterSpoken = false) => {
-    if (vapiRef.current) {
+    if (vapiRef.current?.say) {
       vapiRef.current.say(message, endCallAfterSpoken);
     }
   };
 
   const toggleMute = () => {
-    if (vapiRef.current) {
+    if (vapiRef.current?.setMuted) {
       const newMuteState = !isMuted;
       vapiRef.current.setMuted(newMuteState);
       setIsMuted(newMuteState);
@@ -150,6 +198,7 @@ const useVapi = () => {
     volumeLevel,
     isSessionActive,
     conversation,
+    voiceError,
     toggleCall,
     sendMessage,
     say,

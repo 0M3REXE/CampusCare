@@ -8,7 +8,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant'; text: string }>>([]);
   const [loading, setLoading] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
-  const { isSessionActive, toggleCall, toggleMute, isMuted, conversation, volumeLevel, sendMessage } = useVapi();
+  const { isSessionActive, toggleCall, toggleMute, isMuted, conversation, volumeLevel, sendMessage, voiceError } = useVapi();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -113,6 +113,11 @@ export default function ChatPage() {
         </div>
         {voiceOpen && (
           <div className="mt-3 rounded-2xl border border-black/10 dark:border-white/10 p-3">
+            {voiceError && (
+              <div className="mb-2 rounded-md border border-amber-300 bg-amber-50 text-amber-800 p-2 text-sm">
+                {voiceError}
+              </div>
+            )}
             <div className="text-sm mb-2 text-foreground/70">Voice transcript</div>
             <div className="max-h-40 overflow-y-auto text-sm space-y-1">
               {conversation.map((m, i) => (
