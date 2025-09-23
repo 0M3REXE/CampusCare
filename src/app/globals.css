@@ -16,9 +16,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    /* Lighten the dark background a bit while preserving contrast */
+    --background: #141414; /* was #0a0a0a */
     --foreground: #ededed;
-    --muted: #a3a3a3;
+    --muted: #b0b0b0;
   }
 }
 
