@@ -1,11 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Header() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-black/10 dark:border-white/10 backdrop-blur supports-[backdrop-filter]:bg-background/60 bg-background/80">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <div className="size-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600" />
+          <Image src="/logo.svg" alt="CampusCare logo" width={28} height={28} priority />
           <span className="text-lg font-semibold tracking-tight">CampusCare</span>
         </Link>
         <nav className="hidden sm:flex items-center gap-6 text-sm text-foreground/80">
