@@ -1,103 +1,88 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div>
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(60%_60%_at_50%_0%,rgba(59,130,246,0.25),transparent_60%)]" />
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            <div>
+              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
+                Support students. 24/7. With care.
+              </h1>
+              <p className="mt-4 text-base sm:text-lg text-foreground/80">
+                CampusCare is an AI-powered wellbeing assistant for universities. It listens, guides, and connects students to resources—safely and affordably.
+              </p>
+              <div className="mt-8 flex items-center gap-3">
+                <a href="#get-started" className="rounded-full bg-blue-600 text-white px-5 py-3 text-sm font-medium shadow hover:bg-blue-700 transition-colors">Get started</a>
+                <a href="#features" className="rounded-full border px-5 py-3 text-sm font-medium border-black/10 dark:border-white/15 hover:bg-black/[.04] dark:hover:bg-white/[.06] transition-colors">Learn more</a>
+              </div>
+              <div className="mt-6 text-xs text-foreground/60">Free to try • Works on web • Private by design</div>
+            </div>
+            <div className="rounded-xl border border-black/10 dark:border-white/10 p-4 sm:p-6 bg-gradient-to-br from-white/60 to-white/20 dark:from-black/20 dark:to-black/10 shadow-sm">
+              <div className="aspect-video w-full rounded-lg bg-black/5 dark:bg-white/5 grid place-items-center text-sm text-foreground/60">
+                App preview
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
+        <div className="text-center">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">What you get</h2>
+          <p className="mt-2 text-foreground/70">A simple toolkit to support wellbeing on campus.</p>
+        </div>
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            { title: 'AI chat that listens', desc: 'Empathetic, resource-aware conversations designed for student wellbeing.' },
+            { title: 'Resource routing', desc: 'Match students to campus services, peer support, and emergency guidance.' },
+            { title: 'Risk awareness', desc: 'Lightweight risk flags to route urgent cases responsibly.' },
+            { title: 'Privacy first', desc: 'No tracking of sensitive content by default. You control data policies.' },
+            { title: 'Near-zero cost', desc: 'Built to run on free tiers with minimal overhead.' },
+            { title: 'Easy deployment', desc: 'Ship on Vercel in minutes. Works with Supabase if you need persistence.' },
+          ].map((f) => (
+            <div key={f.title} className="rounded-xl border border-black/10 dark:border-white/10 p-5 bg-background/60 backdrop-blur">
+              <div className="size-9 rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 mb-4" />
+              <h3 className="font-semibold">{f.title}</h3>
+              <p className="mt-1 text-sm text-foreground/70">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how-it-works" className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            { step: '1', title: 'Customize', desc: 'Add your campus resources and guardrails.' },
+            { step: '2', title: 'Launch', desc: 'Deploy to Vercel. Share a single link.' },
+            { step: '3', title: 'Support', desc: 'Students chat anytime. You monitor aggregate trends.' },
+          ].map((s) => (
+            <div key={s.step} className="rounded-xl border border-black/10 dark:border-white/10 p-5">
+              <div className="text-xs tracking-widest text-foreground/60">STEP {s.step}</div>
+              <h3 className="mt-2 font-semibold">{s.title}</h3>
+              <p className="mt-1 text-sm text-foreground/70">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section id="get-started" className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
+        <div className="rounded-2xl p-8 sm:p-12 bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow">
+          <div className="grid md:grid-cols-2 gap-6 items-center">
+            <div>
+              <h3 className="text-2xl font-semibold">Ready to try CampusCare?</h3>
+              <p className="mt-2 text-white/85">Start with the basic chat and add features as you go.</p>
+            </div>
+            <div className="flex md:justify-end">
+              <a href="#" className="rounded-full bg-white text-blue-700 px-6 py-3 text-sm font-medium hover:bg-white/90 transition-colors">Open chat</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
