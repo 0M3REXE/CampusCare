@@ -52,22 +52,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section id="how-it-works" className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { step: '1', title: 'Customize', desc: 'Add your campus resources and guardrails.' },
-            { step: '2', title: 'Launch', desc: 'Deploy to Vercel. Share a single link.' },
-            { step: '3', title: 'Support', desc: 'Students chat anytime. You monitor aggregate trends.' },
-          ].map((s) => (
-            <div key={s.step} className="rounded-xl border border-black/10 dark:border-white/10 p-5">
-              <div className="text-xs tracking-widest text-foreground/60">STEP {s.step}</div>
-              <h3 className="mt-2 font-semibold">{s.title}</h3>
-              <p className="mt-1 text-sm text-foreground/70">{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      
 
       {/* CTA */}
       <section id="get-started" className="mx-auto max-w-6xl px-4 sm:px-6 py-16">

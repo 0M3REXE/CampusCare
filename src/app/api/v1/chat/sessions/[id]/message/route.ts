@@ -3,7 +3,11 @@ import { chatOnce, classifyRisk } from '@/lib/gemini';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(
+  req: NextRequest,
+  ctx: { params: Promise<{ id: string }> }
+) {
+  const { id } = await ctx.params;
   const body = await req.json().catch(() => ({}));
   const content = body?.content as string | undefined;
   const privacyMode = (body?.privacyMode as 'private' | 'standard' | undefined) ?? 'standard';
@@ -21,7 +25,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   // If privacyMode === 'private', do not persist message content. Persistence is optional and omitted here.
 
   return new Response(
-  JSON.stringify({ data: { sessionId: params.id, reply, language, privacyMode, risk } }),
+  JSON.stringify({ data: { sessionId: id, reply, language, privacyMode, risk } }),
     { headers: { 'content-type': 'application/json' } }
   );
 }
