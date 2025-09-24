@@ -21,6 +21,14 @@ export default function Header() {
           </a>
           <a
             className="hover:text-foreground transition-colors"
+            href="https://campuscare-alpha.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wellness Media Hub
+          </a>
+          <a
+            className="hover:text-foreground transition-colors"
             href="https://student-and-dashboard.vercel.app/dashboard"
             target="_blank"
             rel="noopener noreferrer"
@@ -35,7 +43,6 @@ export default function Header() {
           >
             Student Matching
           </a>
-          <Link className="hover:text-foreground transition-colors" href="/media">Media</Link>
         </nav>
         <div className="flex items-center gap-3">
           <a href="#get-started" className="rounded-full border px-4 py-2 text-sm border-black/10 dark:border-white/15 hover:bg-black/[.04] dark:hover:bg-white/[.06] transition-colors">
