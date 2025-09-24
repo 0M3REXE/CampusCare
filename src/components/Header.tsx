@@ -11,8 +11,30 @@ export default function Header() {
         </Link>
         <nav className="hidden sm:flex items-center gap-6 text-sm text-foreground/80">
           <Link className="hover:text-foreground transition-colors" href="/">Home</Link>
-          <Link className="hover:text-foreground transition-colors" href="/chat">Chat</Link>
-          <Link className="hover:text-foreground transition-colors" href="/peers">Peers</Link>
+          <a
+            className="hover:text-foreground transition-colors"
+            href="https://ai-agentchatbot.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Chat
+          </a>
+          <a
+            className="hover:text-foreground transition-colors"
+            href="https://student-and-dashboard.vercel.app/dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Student Dashboard
+          </a>
+          <a
+            className="hover:text-foreground transition-colors"
+            href="https://student-and-dashboard.vercel.app/student_matching"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Student Matching
+          </a>
           <Link className="hover:text-foreground transition-colors" href="/media">Media</Link>
         </nav>
         <div className="flex items-center gap-3">
