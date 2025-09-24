@@ -75,9 +75,9 @@ export default function Home() {
             <p className="mt-1 text-lg font-mono tracking-wide">9152987821</p>
           </a>
           <a
-            href="tel:112"
+            href="tel:1-800 891 4416"
             className="rounded-xl border border-black/10 dark:border-white/10 p-5 bg-background/60 backdrop-blur hover:bg-black/[.04] dark:hover:bg-white/[.06] transition-colors"
-            aria-label="Call Emergency Services at 112"
+            aria-label="Telemanas Hotline"
           >
 
             <h3 className="font-semibold">Telemanas Hotline</h3>
