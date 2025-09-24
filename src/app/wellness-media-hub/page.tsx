@@ -12,11 +12,11 @@ const videos = [
   { id: '1vx8iUvfyCY', title: 'Study Break Meditation' },
 ];
 
-export default function MediaPage() {
+export default function WellnessMediaHubPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 space-y-10">
       <div className="mb-6">
-        <h1 className="text-3xl font-semibold tracking-tight">Media</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Wellness Media Hub</h1>
         <p className="mt-2 text-foreground/70">Curated wellbeing content for students.</p>
       </div>
 

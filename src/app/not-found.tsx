@@ -10,7 +10,7 @@ export default function NotFound() {
         action={{ label: 'Go home', href: '/' }}
       />
       <div className="mt-4 text-center text-sm text-foreground/60">
-        Or <Link className="underline" href="/media">browse media</Link> or <Link className="underline" href="/chat">open chat</Link>.
+  Or <Link className="underline" href="/wellness-media-hub">browse wellness media hub</Link> or <Link className="underline" href="/chat">open chat</Link>.
       </div>
     </div>
   );
