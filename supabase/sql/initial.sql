@@ -118,15 +118,23 @@ alter table risk_assessments enable row level security;
 alter table alerts enable row level security;
 
 -- Basic policies (adjust as needed)
-create policy if not exists "users can read self" on users_public for select using (id = auth.uid());
-create policy if not exists "users can update self" on users_public for update using (id = auth.uid());
+drop policy if exists "users can read self" on users_public;
+create policy "users can read self" on users_public for select using (id = auth.uid());
+drop policy if exists "users can update self" on users_public;
+create policy "users can update self" on users_public for update using (id = auth.uid());
 
-create policy if not exists "own profile" on profiles for all using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy if not exists "own profile embedding" on profile_embeddings for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+drop policy if exists "own profile" on profiles;
+create policy "own profile" on profiles for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+drop policy if exists "own profile embedding" on profile_embeddings;
+create policy "own profile embedding" on profile_embeddings for all using (user_id = auth.uid()) with check (user_id = auth.uid());
 
-create policy if not exists "conversation owner" on conversations for all using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy if not exists "messages within own conversations" on messages for all using (exists (select 1 from conversations c where c.id = messages.conversation_id and c.user_id = auth.uid()));
+drop policy if exists "conversation owner" on conversations;
+create policy "conversation owner" on conversations for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+drop policy if exists "messages within own conversations" on messages;
+create policy "messages within own conversations" on messages for all using (exists (select 1 from conversations c where c.id = messages.conversation_id and c.user_id = auth.uid()));
 
-create policy if not exists "risk belongs to own messages" on risk_assessments for select using (exists (select 1 from messages m join conversations c on c.id=m.conversation_id where m.id = risk_assessments.message_id and c.user_id = auth.uid()));
+drop policy if exists "risk belongs to own messages" on risk_assessments;
+create policy "risk belongs to own messages" on risk_assessments for select using (exists (select 1 from messages m join conversations c on c.id=m.conversation_id where m.id = risk_assessments.message_id and c.user_id = auth.uid()));
 
-create policy if not exists "alerts for own" on alerts for select using (user_id = auth.uid());
+drop policy if exists "alerts for own" on alerts;
+create policy "alerts for own" on alerts for select using (user_id = auth.uid());

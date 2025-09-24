@@ -14,6 +14,7 @@ export default function Header() {
           <Link className="hover:text-foreground transition-colors" href="/chat">Chat</Link>
           <Link className="hover:text-foreground transition-colors" href="/peers">Peers</Link>
           <Link className="hover:text-foreground transition-colors" href="/media">Media</Link>
+          <Link className="hover:text-foreground transition-colors" href="/profile">Profile</Link>
         </nav>
         <div className="flex items-center gap-3">
           <a href="#get-started" className="rounded-full border px-4 py-2 text-sm border-black/10 dark:border-white/15 hover:bg-black/[.04] dark:hover:bg-white/[.06] transition-colors">

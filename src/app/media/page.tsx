@@ -2,13 +2,14 @@
 import VideoGallery from '@/components/VideoGallery';
 
 const videos = [
-  { id: 'j4wKV5-1oTw', title: 'How to cope with anxiety', channel: 'TED-Ed', duration: '6:48' },
-  { id: 'W6IN0wx8rWY', title: 'What is stress? (and how to manage it)', channel: 'SciShow Psych', duration: '9:12' },
-  { id: 'ax0tXbY5r2k', title: 'Mindfulness for beginners', channel: 'Jon Kabat-Zinn', duration: '10:05' },
-  { id: '5qPLtXf1rFQ', title: 'Understanding depression', channel: 'Kati Morton', duration: '7:31' },
-  { id: 'sTJ7AzBIJoI', title: 'Motivation: How to get started', channel: 'Thomas Frank', duration: '8:43' },
-  { id: 'ZToicYcHIOU', title: 'Guided meditation for relaxation', channel: 'The Honest Guys', duration: '15:00' },
-  { id: '2FGR-OspxsU', title: 'How to build resilience', channel: 'TED', duration: '12:10' },
+  { id: 'inpok4MKVLM', title: '5-Minute Guided Meditation for Stress' },
+  { id: 'LiUnFJ8P4gM', title: 'Breathing Exercise for Anxiety Relief' },
+  { id: 'SNqYG95j_UQ', title: 'Progressive Muscle Relaxation' },
+  { id: '6p_yaNFSYao', title: 'Mindfulness for Beginners' },
+  { id: '5mGifCwig8I', title: 'Sleep Stories for Insomnia' },
+  { id: 'hJbRpHZr_d0', title: 'Yoga for Stress Relief' },
+  { id: 'WPPPFqsECz0', title: 'Gratitude Journaling Guide' },
+  { id: '1vx8iUvfyCY', title: 'Study Break Meditation' },
 ];
 
 export default function MediaPage() {

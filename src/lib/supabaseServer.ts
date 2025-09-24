@@ -9,3 +9,12 @@ export function getSupabaseServerClient() {
     auth: { persistSession: false },
   });
 }
+
+export function getSupabaseAdminClient() {
+  if (!env.supabaseUrl || !env.supabaseServiceKey) {
+    throw new Error('Supabase admin env not configured');
+  }
+  return createClient(env.supabaseUrl, env.supabaseServiceKey, {
+    auth: { persistSession: false },
+  });
+}
