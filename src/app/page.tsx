@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 export default function Home() {
   return (
     <div>
@@ -19,9 +21,16 @@ export default function Home() {
               </div>
               <div className="mt-6 text-xs text-foreground/60">Free to try • Works on web • Private by design</div>
             </div>
-            <div className="rounded-xl border border-black/10 dark:border-white/10 p-4 sm:p-6 bg-gradient-to-br from-white/60 to-white/20 dark:from-black/20 dark:to-black/10 shadow-sm">
-              <div className="aspect-video w-full rounded-lg bg-black/5 dark:bg-white/5 grid place-items-center text-sm text-foreground/60">
-                App preview
+            <div className="rounded-xl border border-black/10 dark:border-white/10 overflow-hidden bg-gradient-to-br from-white/60 to-white/20 dark:from-black/20 dark:to-black/10 shadow-sm">
+              <div className="relative aspect-video w-full">
+                <Image
+                  src="/img.png"
+                  alt="CampusCare app preview"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-contain"
+                />
               </div>
             </div>
           </div>
@@ -52,7 +61,30 @@ export default function Home() {
         </div>
       </section>
 
-      
+
+      {/* Urgent help (Contact options) */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="mt-2 grid sm:grid-cols-2 gap-4">
+          <a
+            href="tel:+919152987821"
+            className="rounded-xl border border-black/10 dark:border-white/10 p-5 bg-background/60 backdrop-blur hover:bg-black/[.04] dark:hover:bg-white/[.06] transition-colors"
+            aria-label="Call India Suicide Hotline at 9152987821"
+          >
+
+            <h3 className="font-semibold">India Suicide Hotline</h3>
+            <p className="mt-1 text-lg font-mono tracking-wide">9152987821</p>
+          </a>
+          <a
+            href="tel:112"
+            className="rounded-xl border border-black/10 dark:border-white/10 p-5 bg-background/60 backdrop-blur hover:bg-black/[.04] dark:hover:bg-white/[.06] transition-colors"
+            aria-label="Call Emergency Services at 112"
+          >
+
+            <h3 className="font-semibold">Telemanas Hotline</h3>
+            <p className="mt-1 text-lg font-mono tracking-wide">1-800 891 4416</p>
+          </a>
+        </div>
+      </section>
 
       {/* CTA */}
       <section id="get-started" className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
