@@ -13,6 +13,7 @@ export default function Header() {
           <Link className="hover:text-foreground transition-colors" href="/">Home</Link>
           <Link className="hover:text-foreground transition-colors" href="/chat">Chat</Link>
           <Link className="hover:text-foreground transition-colors" href="/peers">Peers</Link>
+          <Link className="hover:text-foreground transition-colors" href="/student-dashboard">Student Dashboard</Link>
           <Link className="hover:text-foreground transition-colors" href="/wellness-media-hub">Wellness Media Hub</Link>
           <Link className="hover:text-foreground transition-colors" href="/profile">Profile</Link>
         </nav>
