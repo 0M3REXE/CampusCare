@@ -1,53 +1,31 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import useVapi from '@/lib/useVapi';
 import { PromptBlock } from '@/components/chat/PromptBlock';
 import { AudioControls } from '@/components/chat/AudioControls';
 import { VoiceVisualizer } from '@/components/chat/VoiceVisualizer';
+import { useOrCreateConversation, useMessages, useSendMessage } from '@/lib/chat/hooks';
 
-interface ChatMessage { role: 'user' | 'assistant'; text: string }
+// (Legacy ChatMessage interface removed; using persisted schema messages instead)
 
 export default function ChatPage() {
-  const [sessionId, setSessionId] = useState<string | null>(null);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<'voice' | 'text'>('voice');
   const { isSessionActive, toggleCall, toggleMute, isMuted, conversation, volumeLevel, sendMessage, voiceError } = useVapi();
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // session creation
-  useEffect(() => {
-    const create = async () => {
-      const res = await fetch('/api/v1/chat/sessions', { method: 'POST' });
-      const json = await res.json();
-      setSessionId(json?.data?.id);
-    };
-    create();
-  }, []);
+  // Initial schema persisted conversation + messages
+  const { conversationId, initializing } = useOrCreateConversation();
+  const { messages: persistedMessages, loadMore, loading: loadingMessages } = useMessages(conversationId);
+  const { send: sendPersisted, sending } = useSendMessage(conversationId);
 
   const send = async () => {
-    if (!input.trim() || !sessionId) return;
+    if (!input.trim() || !conversationId) return;
     const content = input.trim();
-    setMessages((m) => [...m, { role: 'user', text: content }]);
     setInput('');
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/v1/chat/sessions/${sessionId}/message`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ content, privacyMode: 'private', language: 'en' }),
-      });
-      const json = await res.json();
-      const reply = json?.data?.reply ?? 'No reply';
-      setMessages((m) => [...m, { role: 'assistant', text: reply }]);
-      try { sendMessage('assistant', reply); } catch {}
-    } catch {
-      setMessages((m) => [...m, { role: 'assistant', text: 'Error sending message.' }]);
-    } finally {
-      setLoading(false);
-      inputRef.current?.focus();
-    }
+    // Optimistic local auditory send (voice API) not tied to persisted messages list
+    try { sendMessage('user', content); } catch {}
+    await sendPersisted(content, 'private', 'en');
+    inputRef.current?.focus();
   };
 
   const promptLines = ["I'm listening, CampusCare Voice Assistant.", "What's on your mind?"]; // placeholder personalization
@@ -115,13 +93,18 @@ export default function ChatPage() {
         {mode === 'text' && (
           <div className="w-full max-w-3xl flex flex-col h-full">
             <div className="flex-1 overflow-y-auto space-y-3 bg-white/5 rounded-2xl p-4 backdrop-blur-sm">
-              {!sessionId && <div className="text-sm text-white/60">Creating session…</div>}
-              {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`${m.role === 'user' ? 'bg-blue-600 text-white' : 'bg-white/10'} px-3 py-2 rounded-2xl max-w-[75%]`}>{m.text}</div>
+              {initializing && <div className="text-sm text-white/60">Initializing conversation…</div>}
+              {!initializing && persistedMessages.length === 0 && <div className="text-sm text-white/60">No messages yet.</div>}
+              {persistedMessages.map((m) => (
+                <div key={m.id} className={`flex ${m.sender === 'student' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`${m.sender === 'student' ? 'bg-blue-600 text-white' : m.sender === 'bot' ? 'bg-white/10' : 'bg-green-700/70'} px-3 py-2 rounded-2xl max-w-[75%] whitespace-pre-wrap`}>{m.content}</div>
                 </div>
               ))}
-              {loading && <div className="text-sm text-white/60">Assistant is typing…</div>}
+              {loadingMessages && <div className="text-sm text-white/60">Loading…</div>}
+              {sending && <div className="text-sm text-white/60">Assistant is processing…</div>}
+              {!loadingMessages && !initializing && persistedMessages.length >= 30 && (
+                <button onClick={() => loadMore()} className="mt-2 text-xs text-white/50 underline">Load older messages</button>
+              )}
             </div>
             <div className="mt-4 flex items-center gap-3">
               <input
@@ -134,7 +117,7 @@ export default function ChatPage() {
               />
               <button
                 onClick={send}
-                disabled={!sessionId || loading}
+                disabled={!conversationId || sending || initializing}
                 className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 transition-colors font-medium"
               >
                 Send
