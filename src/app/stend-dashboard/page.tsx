@@ -15,5 +15,4 @@ export default function StendDashboardPage() {
 	return <StendDashboardPageInner />;
 }
 
-export const metadata = {} as const; // explicit export so file is treated as module
 

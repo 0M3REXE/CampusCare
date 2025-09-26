@@ -1,4 +1,4 @@
-import { RISK_RULES, RiskRule } from './rules';
+import { RISK_RULES } from './rules';
 
 export interface RiskEvaluation {
   score: number;
