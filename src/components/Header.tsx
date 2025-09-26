@@ -12,7 +12,7 @@ export default function Header() {
         <nav className="hidden sm:flex items-center gap-6 text-sm text-foreground/80">
           <Link className="hover:text-foreground transition-colors" href="/">Home</Link>
           <Link className="hover:text-foreground transition-colors" href="/chat">Chat</Link>
-          <Link className="hover:text-foreground transition-colors" href="/peers">Peers</Link>
+          <Link className="hover:text-foreground transition-colors" href="/peers">Find Peers</Link>
           <Link className="hover:text-foreground transition-colors" href="/student-dashboard">Student Dashboard</Link>
           <Link className="hover:text-foreground transition-colors" href="/wellness-media-hub">Wellness Media Hub</Link>
           <Link className="hover:text-foreground transition-colors" href="/profile">Profile</Link>

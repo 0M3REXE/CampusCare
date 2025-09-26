@@ -12,6 +12,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState('');
+  const [institution, setInstitution] = useState('');
   const [strengths, setStrengths] = useState<string[]>([]);
   const [weaknesses, setWeaknesses] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
@@ -35,6 +36,11 @@ export default function OnboardingPage() {
       if (data) {
         setDisplayName(data.display_name ?? '');
         setInterests(Array.isArray(data.interests) ? data.interests : []);
+        if (data.preferences && typeof data.preferences === 'object') {
+          const prefsObj = data.preferences as Record<string, unknown>;
+          const inst = prefsObj['institution'];
+          if (typeof inst === 'string') setInstitution(inst);
+        }
       }
       setLoading(false);
     };
@@ -62,6 +68,7 @@ export default function OnboardingPage() {
         strengths,
         weaknesses,
         compatibility,
+        institution: institution.trim() || null,
       },
       updated_at: new Date().toISOString(),
     });
@@ -87,6 +94,17 @@ export default function OnboardingPage() {
             placeholder="Your name"
             className="mt-1 w-full rounded-lg border border-black/10 dark:border-white/10 bg-background px-3 py-2 outline-none"
           />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium">Institution</label>
+          <input
+            value={institution}
+            onChange={(e) => setInstitution(e.target.value)}
+            placeholder="e.g. University of Example"
+            className="mt-1 w-full rounded-lg border border-black/10 dark:border-white/10 bg-background px-3 py-2 outline-none"
+          />
+          <p className="mt-1 text-xs text-foreground/60">Used to refine peer matching. Optional.</p>
         </div>
 
         <div>

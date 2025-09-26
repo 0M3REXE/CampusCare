@@ -18,6 +18,8 @@ export default function ProfilePage() {
   const [saved, setSaved] = useState(false);
 
   const [displayName, setDisplayName] = useState('');
+  const [institution, setInstitution] = useState('');
+  const [bio, setBio] = useState('');
   const [strengths, setStrengths] = useState<string[]>([]);
   const [weaknesses, setWeaknesses] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
@@ -31,17 +33,18 @@ export default function ProfilePage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.replace('/login'); return; }
 
-      type Preferences = { strengths?: string[]; weaknesses?: string[]; compatibility?: string };
+      type Preferences = { strengths?: string[]; weaknesses?: string[]; compatibility?: string; institution?: string };
       type ProfileRow = {
         display_name: string | null;
         interests: string[] | null;
         preferences: Preferences | null;
         visibility: string | null;
+        bio?: string | null;
       };
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('display_name, interests, preferences, visibility')
+        .select('display_name, interests, preferences, visibility, bio')
         .eq('user_id', user.id)
         .maybeSingle();
       if (error) {
@@ -55,6 +58,8 @@ export default function ProfilePage() {
         setWeaknesses(Array.isArray(prefs.weaknesses) ? prefs.weaknesses : []);
         setCompatibility(typeof prefs.compatibility === 'string' ? prefs.compatibility : '');
         setVisibility(typeof row.visibility === 'string' ? row.visibility : 'friends');
+        if (typeof prefs.institution === 'string') setInstitution(prefs.institution);
+        if (typeof row.bio === 'string') setBio(row.bio);
       }
       setLoading(false);
     };
@@ -77,8 +82,9 @@ export default function ProfilePage() {
       user_id: user.id,
       display_name: displayName,
       interests,
-      preferences: { strengths, weaknesses, compatibility },
+      preferences: { strengths, weaknesses, compatibility, institution: institution.trim() || null },
       visibility,
+      bio: bio.trim() || null,
       updated_at: new Date().toISOString(),
     });
     if (error) {
@@ -109,6 +115,29 @@ export default function ProfilePage() {
             placeholder="Your name"
             className="mt-1 w-full rounded-lg border border-black/10 dark:border-white/10 bg-background px-3 py-2 outline-none"
           />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium">Institution</label>
+          <input
+            value={institution}
+            onChange={(e) => setInstitution(e.target.value)}
+            placeholder="e.g. University of Example"
+            className="mt-1 w-full rounded-lg border border-black/10 dark:border-white/10 bg-background px-3 py-2 outline-none"
+          />
+          <p className="mt-1 text-xs text-foreground/60">Shown to peers depending on your visibility setting.</p>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium">Bio</label>
+          <textarea
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            placeholder="Briefly introduce yourself or what you are looking for."
+            rows={4}
+            className="mt-1 w-full rounded-lg border border-black/10 dark:border-white/10 bg-background px-3 py-2 outline-none resize-none"
+          />
+          <p className="mt-1 text-xs text-foreground/60">Max ~300 characters recommended.</p>
         </div>
 
         <div>
