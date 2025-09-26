@@ -1,5 +1,7 @@
 "use client";
 import VideoGallery from '@/components/VideoGallery';
+import BreathingExercise from '@/components/wellness/BreathingExercise';
+import GroundingHelper from '@/components/wellness/GroundingHelper';
 
 const videos = [
   { id: 'inpok4MKVLM', title: '5-Minute Guided Meditation for Stress' },
@@ -19,6 +21,18 @@ export default function WellnessMediaHubPage() {
         <h1 className="text-3xl font-semibold tracking-tight">Wellness Media Hub</h1>
         <p className="mt-2 text-foreground/70">Curated wellbeing content for students.</p>
       </div>
+
+      {/* Guided Breathing / Panic Relief */}
+      <section className="space-y-6">
+        <div>
+          <h2 className="text-xl font-semibold flex items-center gap-2">Calm & Breathing Support</h2>
+          <p className="mt-1 text-sm text-foreground/70 max-w-3xl">If you feel anxious or notice early signs of a panic surge, use the guided patterns below to slow your breathing and settle your nervous system.</p>
+          <div className="mt-4">
+            <BreathingExercise />
+          </div>
+        </div>
+        <GroundingHelper />
+      </section>
 
       {/* Articles section (placeholder) */}
       <section>

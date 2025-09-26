@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowser';
+import Loader from '@/components/ui/Loader';
 
 type Peer = {
   user_id: string;
@@ -70,7 +71,11 @@ export default function PeersPage() {
     setConfirmOpen(false);
   };
 
-  if (loading) return <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10">Loading…</div>;
+  if (loading) return (
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10">
+      <Loader label="Fetching peers" />
+    </div>
+  );
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10">

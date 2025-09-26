@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -95,7 +96,7 @@ export default function Home() {
               <p className="mt-2 text-white/85">Start with the basic chat and add features as you go.</p>
             </div>
             <div className="flex md:justify-end">
-              <a href="#" className="rounded-full bg-white text-blue-700 px-6 py-3 text-sm font-medium hover:bg-white/90 transition-colors">Open chat</a>
+              <Link href="/chat" className="rounded-full bg-white text-blue-700 px-6 py-3 text-sm font-medium hover:bg-white/90 transition-colors">Open chat</Link>
             </div>
           </div>
         </div>

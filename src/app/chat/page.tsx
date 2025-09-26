@@ -5,6 +5,7 @@ import { PromptBlock } from '@/components/chat/PromptBlock';
 import { AudioControls } from '@/components/chat/AudioControls';
 import { VoiceVisualizer } from '@/components/chat/VoiceVisualizer';
 import { useOrCreateConversation, useMessages, useSendMessage } from '@/lib/chat/hooks';
+import { InlineLoader } from '@/components/ui/Loader';
 
 // (Legacy ChatMessage interface removed; using persisted schema messages instead)
 
@@ -93,14 +94,14 @@ export default function ChatPage() {
         {mode === 'text' && (
           <div className="w-full max-w-3xl flex flex-col h-full">
             <div className="flex-1 overflow-y-auto space-y-3 bg-white/5 rounded-2xl p-4 backdrop-blur-sm">
-              {initializing && <div className="text-sm text-white/60">Initializing conversation…</div>}
+              {initializing && <div className="py-2"><InlineLoader label="Setting up conversation" /></div>}
               {!initializing && persistedMessages.length === 0 && <div className="text-sm text-white/60">No messages yet.</div>}
               {persistedMessages.map((m) => (
                 <div key={m.id} className={`flex ${m.sender === 'student' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`${m.sender === 'student' ? 'bg-blue-600 text-white' : m.sender === 'bot' ? 'bg-white/10' : 'bg-green-700/70'} px-3 py-2 rounded-2xl max-w-[75%] whitespace-pre-wrap`}>{m.content}</div>
                 </div>
               ))}
-              {loadingMessages && <div className="text-sm text-white/60">Loading…</div>}
+              {loadingMessages && <div className="py-2"><InlineLoader label="Loading messages" /></div>}
               {sending && <div className="text-sm text-white/60">Assistant is processing…</div>}
               {!loadingMessages && !initializing && persistedMessages.length >= 30 && (
                 <button onClick={() => loadMore()} className="mt-2 text-xs text-white/50 underline">Load older messages</button>

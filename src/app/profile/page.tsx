@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowser';
+import Loader from '@/components/ui/Loader';
 
 // Options should mirror onboarding
 const strengthOptions = ['Listening', 'Empathy', 'Problem Solving', 'Motivation'] as const;
@@ -88,7 +89,11 @@ export default function ProfilePage() {
     setSaving(false);
   };
 
-  if (loading) return <div className="mx-auto max-w-2xl px-4 sm:px-6 py-10">Loading…</div>;
+  if (loading) return (
+    <div className="mx-auto max-w-2xl px-4 sm:px-6 py-10">
+      <Loader label="Loading profile" />
+    </div>
+  );
 
   return (
     <div className="mx-auto max-w-2xl px-4 sm:px-6 py-10">

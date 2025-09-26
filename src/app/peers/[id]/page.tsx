@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowser';
 import { usePeerMessages, useSendPeerMessage, useMarkConversationRead } from '@/lib/peer/hooks';
+import Loader from '@/components/ui/Loader';
 
 interface PeerProfile { user_id: string; display_name: string; interests?: string[]; visibility: string }
 
@@ -55,21 +56,36 @@ export default function PeerChatPage() {
       if (!user) { router.replace('/login'); return; }
       const { data: existing } = await supabase.from('profiles').select('user_id').eq('user_id', user.id).maybeSingle();
       if (!existing) { router.replace('/onboarding'); return; }
+      // Create or retrieve conversation first
+      let convoId: string | null = null;
+      try {
+        const res = await fetch('/api/v1/peer/conversations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+          body: JSON.stringify({ peerUserId: peerId })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          convoId = data.conversation.id;
+          setConversationId(convoId);
+        }
+      } catch {}
 
-      // Fetch peer profile (including interests)
-      const { data: peerProf } = await supabase.from('profiles').select('user_id, display_name, interests, visibility').eq('user_id', peerId).maybeSingle();
-      if (peerProf) setPeerProfile({ ...peerProf, interests: peerProf.interests || [] });
+      // Fetch conversations list (server API hydrates peer profile w/ interests)
+      try {
+        const res2 = await fetch('/api/v1/peer/conversations', {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        if (res2.ok) {
+          const json = await res2.json();
+            const conversations = json.conversations as { id: string; peer: PeerProfile }[];
+            const target = conversations.find(c => c.peer.user_id === peerId);
+            if (target) {
+              setPeerProfile(target.peer);
+            }
+        }
+      } catch {}
 
-      // Create or retrieve conversation
-      const res = await fetch('/api/v1/peer/conversations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ peerUserId: peerId })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setConversationId(data.conversation.id);
-      }
       setLoading(false);
     };
     init();
@@ -97,15 +113,29 @@ export default function PeerChatPage() {
     markRead();
   };
 
-  if (loading) return <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10">Loading…</div>;
+  if (loading) return (
+    <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10">
+      <Loader label="Preparing chat" />
+    </div>
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-10 flex flex-col gap-4">
       <div>
-        <h1 className="text-2xl font-semibold">{peerProfile?.display_name ? `Chat with ${peerProfile.display_name}` : 'Chat'}</h1>
-        <p className="mt-1 text-sm text-foreground/70">
-          {peerProfile?.interests?.length ? peerProfile.interests.join(', ') : 'No interests listed'}
-        </p>
+        <h1 className="text-2xl font-semibold">Chat with {peerProfile?.display_name?.trim() || 'Student'}</h1>
+        {peerProfile && (
+          peerProfile.interests && peerProfile.interests.length > 0 ? (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {peerProfile.interests.slice(0,12).map(tag => (
+                <span key={tag} className="text-xs rounded-full border border-black/10 dark:border-white/10 px-2 py-1 text-foreground/70 bg-background/80">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-2 text-sm text-foreground/60 italic">No interests added yet</p>
+          )
+        )}
       </div>
       <div className="flex flex-col h-[60vh] rounded-xl border border-black/10 dark:border-white/10 overflow-hidden bg-background/60">
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
