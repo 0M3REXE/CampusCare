@@ -1,20 +1,45 @@
 "use client";
-import VideoGallery from '@/components/VideoGallery';
+import VideoGallery, { Video } from '@/components/VideoGallery';
 import BreathingExercise from '@/components/wellness/BreathingExercise';
 import GroundingHelper from '@/components/wellness/GroundingHelper';
+import { useState, useMemo } from 'react';
 
-const videos = [
-  { id: 'inpok4MKVLM', title: '5-Minute Guided Meditation for Stress' },
-  { id: 'LiUnFJ8P4gM', title: 'Breathing Exercise for Anxiety Relief' },
-  { id: 'SNqYG95j_UQ', title: 'Progressive Muscle Relaxation' },
-  { id: '6p_yaNFSYao', title: 'Mindfulness for Beginners' },
-  { id: '5mGifCwig8I', title: 'Sleep Stories for Insomnia' },
-  { id: 'hJbRpHZr_d0', title: 'Yoga for Stress Relief' },
-  { id: 'WPPPFqsECz0', title: 'Gratitude Journaling Guide' },
-  { id: '1vx8iUvfyCY', title: 'Study Break Meditation' },
+const CATEGORY_OPTIONS = [
+  'All',
+  'anxiety',
+  'balance',
+  'breathing',
+  'burnout',
+  'calm',
+  'exam',
+  'meditation',
+  'mindfulness',
+  'panic',
+  'relaxation',
+  'sleep',
+  'stress',
+  'study',
+  'wellbeing',
+] as const;
+
+const videos: Video[] = [
+  { id: 'inpok4MKVLM', title: '5-Minute Guided Meditation for Stress', categories: ['stress','meditation','calm'] },
+  { id: 'LiUnFJ8P4gM', title: 'Breathing Exercise for Anxiety Relief', categories: ['anxiety','breathing','calm'] },
+  { id: 'SNqYG95j_UQ', title: 'Progressive Muscle Relaxation', categories: ['relaxation','stress','calm'] },
+  { id: '6p_yaNFSYao', title: 'Mindfulness for Beginners', categories: ['mindfulness','balance','wellbeing'] },
+  { id: '5mGifCwig8I', title: 'Sleep Stories for Insomnia', categories: ['sleep','calm','relaxation'] },
+  { id: 'hJbRpHZr_d0', title: 'Yoga for Stress Relief', categories: ['stress','balance','wellbeing'] },
+  { id: 'WPPPFqsECz0', title: 'Gratitude Journaling Guide', categories: ['wellbeing','mindfulness','balance'] },
+  { id: '1vx8iUvfyCY', title: 'Study Break Meditation', categories: ['study','meditation','stress'] },
 ];
 
 export default function WellnessMediaHubPage() {
+  const [category, setCategory] = useState<(typeof CATEGORY_OPTIONS)[number]>('All');
+  const filteredVideos = useMemo(() => {
+    if (category === 'All') return videos;
+    return videos.filter(v => v.categories?.includes(category));
+  }, [category]);
+
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 space-y-10">
       <div className="mb-6">
@@ -34,27 +59,27 @@ export default function WellnessMediaHubPage() {
         <GroundingHelper />
       </section>
 
-      {/* Articles section (placeholder) */}
-      <section>
-        <h2 className="text-xl font-semibold">Articles</h2>
-        <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1,2,3].map((i) => (
-            <div key={i} className="rounded-xl border border-black/10 dark:border-white/10 p-4">
-              <div className="aspect-video rounded-md bg-black/5 dark:bg-white/5 grid place-items-center text-foreground/50">Thumbnail</div>
-              <div className="mt-3 font-medium">Article {i}</div>
-              <div className="text-sm text-foreground/60">Practical guidance on stress management, balance, and campus life.</div>
-              <div className="mt-2 text-xs text-foreground/50">3 min read • Wellbeing</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Helpful videos section */}
       <section>
-        <h2 className="text-xl font-semibold">Helpful videos</h2>
-        <p className="mt-1 text-sm text-foreground/70">Short, accessible content on mental health and wellbeing.</p>
-        <div className="mt-4">
-          <VideoGallery videos={videos} />
+        <h2 className="text-xl font-semibold">Videos</h2>
+        <p className="mt-1 text-sm text-foreground/70">Short, accessible content on mental health and wellbeing. Filter by what you need right now.</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {CATEGORY_OPTIONS.map(opt => {
+            const active = category === opt;
+            return (
+              <button
+                key={opt}
+                onClick={() => setCategory(opt)}
+                className={`px-3 py-1 rounded-full text-sm border transition font-medium tracking-wide ${active ? 'bg-foreground text-background border-foreground' : 'border-foreground/20 hover:border-foreground/40 text-foreground/70 hover:text-foreground'}`}
+                aria-pressed={active}
+              >
+                {opt}
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-6">
+          <VideoGallery videos={filteredVideos} />
         </div>
       </section>
     </div>

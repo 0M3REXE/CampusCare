@@ -6,7 +6,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 w-full border-b border-black/10 dark:border-white/10 backdrop-blur supports-[backdrop-filter]:bg-background/60 bg-background/80">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="CampusCare logo" width={28} height={28} priority />
+          <Image src="/logo.png" alt="CampusCare logo" width={28} height={28} priority />
           <span className="text-lg font-semibold tracking-tight">CampusCare</span>
         </Link>
         <nav className="hidden sm:flex items-center gap-6 text-sm text-foreground/80">

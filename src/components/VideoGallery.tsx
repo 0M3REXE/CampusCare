@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-type Video = {
+export type Video = {
   id: string; // YouTube video ID
   title: string;
   channel?: string;
   duration?: string;
+  categories?: string[]; // wellness categories (anxiety, sleep, etc.)
 };
 
 type VideoGalleryProps = {
@@ -51,6 +52,15 @@ export default function VideoGallery({ videos }: VideoGalleryProps) {
                   {v.channel && <span>{v.channel}</span>}
                   {v.channel && v.duration && <span>•</span>}
                   {v.duration && <span>{v.duration}</span>}
+                </div>
+              )}
+              {v.categories && v.categories.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {v.categories.slice(0,4).map(cat => (
+                    <span key={cat} className="px-2 py-0.5 rounded-full bg-foreground/5 text-foreground/60 text-[10px] tracking-wide uppercase">
+                      {cat}
+                    </span>
+                  ))}
                 </div>
               )}
             </div>
