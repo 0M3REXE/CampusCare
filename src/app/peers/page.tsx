@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowser';
-import Loader from '@/components/ui/Loader';
 import { usePeerMatches } from '@/lib/peer/matchHooks';
+import { Skeleton, SkeletonText, SkeletonCard } from '@/components/ui/Skeleton';
 
 // (No peer list shown by default; keep only matching workflow)
 
@@ -61,7 +61,34 @@ export default function PeersPage() {
 
   if (loading) return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10">
-      <Loader label="Fetching peers" />
+      <div className="space-y-6">
+        {/* Header skeleton */}
+        <div className="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <Skeleton variant="text" width="30%" className="h-9 mb-2" />
+            <SkeletonText lines={1} />
+          </div>
+          <Skeleton variant="button" width="140px" />
+        </div>
+
+        {/* Info card skeleton */}
+        <div className="rounded-2xl border border-dashed border-black/15 dark:border-white/15 p-6">
+          <Skeleton variant="text" width="50%" className="h-6 mb-2" />
+          <SkeletonText lines={2} />
+        </div>
+
+        {/* Match button skeleton */}
+        <div className="mt-4 mb-10">
+          <Skeleton variant="button" width="100px" />
+        </div>
+
+        {/* Match results skeleton */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 

@@ -1,4 +1,36 @@
-export default function ActivityWidget() {
+import { Skeleton } from '@/components/ui/Skeleton';
+
+export default function ActivityWidget({ loading = false }: { loading?: boolean }) {
+  if (loading) {
+    return (
+      <section className="rounded-2xl border border-black/10 dark:border-white/10 bg-background/60 p-5">
+        <div className="flex items-center justify-between">
+          <Skeleton variant="text" width="30%" className="h-6" />
+          <Skeleton variant="button" width="60px" />
+        </div>
+        <div className="mt-5 grid grid-cols-3 gap-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <Skeleton className="size-12 rounded-lg" />
+              <div>
+                <Skeleton variant="text" width="80px" className="h-4 mb-1" />
+                <Skeleton variant="text" width="60px" className="h-5" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i}>
+              <Skeleton variant="text" width="40%" className="h-4 mb-2" />
+              <Skeleton className="h-2 rounded-full w-full" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   const rows = [
     { label: 'Move', pct: 73 },
     { label: 'Exercise', pct: 90 },

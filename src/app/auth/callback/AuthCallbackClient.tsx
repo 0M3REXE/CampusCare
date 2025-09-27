@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowser';
+import { Skeleton, SkeletonText } from '@/components/ui/Skeleton';
 
 export default function AuthCallbackClient() {
   const router = useRouter();
@@ -43,8 +44,31 @@ export default function AuthCallbackClient() {
 
   return (
     <div className="mx-auto max-w-md px-4 sm:px-6 py-16">
-      <h1 className="text-2xl font-semibold">Signing you in…</h1>
-      {error && <p className="mt-2 text-rose-600 dark:text-rose-400 text-sm">{error}</p>}
+      {error ? (
+        <>
+          <div className="mb-4">
+            <Skeleton variant="text" width="60%" className="mb-2 h-8" />
+            <SkeletonText lines={2} />
+          </div>
+          <div className="p-4 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 rounded-lg">
+            <p className="text-rose-600 dark:text-rose-400 text-sm">{error}</p>
+          </div>
+        </>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <Skeleton variant="text" width="40%" className="h-8 mb-2" />
+            <SkeletonText lines={1} />
+          </div>
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+          <div className="space-y-2">
+            <Skeleton variant="button" width="100%" />
+            <SkeletonText lines={2} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

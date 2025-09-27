@@ -1,4 +1,32 @@
-export default function HabitTracker() {
+import { Skeleton } from '@/components/ui/Skeleton';
+
+export default function HabitTracker({ loading = false }: { loading?: boolean }) {
+  if (loading) {
+    return (
+      <section className="rounded-2xl border border-black/10 dark:border-white/10 bg-background/60 p-5">
+        <div className="flex items-center justify-between">
+          <Skeleton variant="text" width="40%" className="h-6" />
+          <div className="flex items-center gap-2">
+            <Skeleton variant="button" width="60px" />
+            <Skeleton variant="button" width="60px" />
+          </div>
+        </div>
+        <div className="mt-4 space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-3 py-3 border-b border-black/10 dark:border-white/10 last:border-0">
+              <Skeleton className="size-12 rounded-xl" />
+              <div className="flex-1">
+                <Skeleton variant="text" width="70%" className="h-5 mb-1" />
+                <Skeleton variant="text" width="90%" className="h-4" />
+              </div>
+              <Skeleton className="size-5 rounded" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   const tasks = [
     { title: 'Morning run', time: '07:00 am', place: 'Park', dur: '45min', done: true },
     { title: '1,5L of water daily', time: 'All day', place: 'Park', done: false },

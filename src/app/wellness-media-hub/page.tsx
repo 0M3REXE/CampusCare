@@ -2,7 +2,8 @@
 import VideoGallery, { Video } from '@/components/VideoGallery';
 import BreathingExercise from '@/components/wellness/BreathingExercise';
 import GroundingHelper from '@/components/wellness/GroundingHelper';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 const CATEGORY_OPTIONS = [
   'All',
@@ -35,6 +36,14 @@ const videos: Video[] = [
 
 export default function WellnessMediaHubPage() {
   const [category, setCategory] = useState<(typeof CATEGORY_OPTIONS)[number]>('All');
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    // Simulate loading state for demonstration
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+  
   const filteredVideos = useMemo(() => {
     if (category === 'All') return videos;
     return videos.filter(v => v.categories?.includes(category));
@@ -64,22 +73,28 @@ export default function WellnessMediaHubPage() {
         <h2 className="text-xl font-semibold">Videos</h2>
         <p className="mt-1 text-sm text-foreground/70">Short, accessible content on mental health and wellbeing. Filter by what you need right now.</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {CATEGORY_OPTIONS.map(opt => {
-            const active = category === opt;
-            return (
-              <button
-                key={opt}
-                onClick={() => setCategory(opt)}
-                className={`px-3 py-1 rounded-full text-sm border transition font-medium tracking-wide ${active ? 'bg-foreground text-background border-foreground' : 'border-foreground/20 hover:border-foreground/40 text-foreground/70 hover:text-foreground'}`}
-                aria-pressed={active}
-              >
-                {opt}
-              </button>
-            );
-          })}
+          {loading ? (
+            Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} variant="button" className="rounded-full" width={`${60 + Math.random() * 40}px`} />
+            ))
+          ) : (
+            CATEGORY_OPTIONS.map(opt => {
+              const active = category === opt;
+              return (
+                <button
+                  key={opt}
+                  onClick={() => setCategory(opt)}
+                  className={`px-3 py-1 rounded-full text-sm border transition font-medium tracking-wide ${active ? 'bg-foreground text-background border-foreground' : 'border-foreground/20 hover:border-foreground/40 text-foreground/70 hover:text-foreground'}`}
+                  aria-pressed={active}
+                >
+                  {opt}
+                </button>
+              );
+            })
+          )}
         </div>
         <div className="mt-6">
-          <VideoGallery videos={filteredVideos} />
+          <VideoGallery videos={filteredVideos} loading={loading} />
         </div>
       </section>
     </div>

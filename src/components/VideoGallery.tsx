@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export type Video = {
   id: string; // YouTube video ID
@@ -13,9 +14,10 @@ export type Video = {
 
 type VideoGalleryProps = {
   videos: Video[];
+  loading?: boolean;
 };
 
-export default function VideoGallery({ videos }: VideoGalleryProps) {
+export default function VideoGallery({ videos, loading = false }: VideoGalleryProps) {
   const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -25,6 +27,29 @@ export default function VideoGallery({ videos }: VideoGalleryProps) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
+
+  if (loading) {
+    return (
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="rounded-xl border border-black/10 dark:border-white/10 overflow-hidden bg-background/60">
+            <div className="aspect-video">
+              <Skeleton className="w-full h-full" />
+            </div>
+            <div className="p-4 space-y-2">
+              <Skeleton variant="text" width="90%" />
+              <Skeleton variant="text" width="60%" />
+              <div className="flex gap-1 mt-2">
+                <Skeleton variant="button" width="60px" className="h-5 rounded-full" />
+                <Skeleton variant="button" width="80px" className="h-5 rounded-full" />
+                <Skeleton variant="button" width="70px" className="h-5 rounded-full" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div>

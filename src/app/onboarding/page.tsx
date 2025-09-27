@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabaseBrowser';
+import { Skeleton, SkeletonText, SkeletonButton } from '@/components/ui/Skeleton';
 
 const strengthOptions = ['Listening', 'Empathy', 'Problem Solving', 'Motivation'] as const;
 const weaknessOptions = ['Time Management', 'Anxiety', 'Public Speaking', 'Procrastination'] as const;
@@ -79,7 +80,50 @@ export default function OnboardingPage() {
     router.replace('/peers');
   };
 
-  if (loading) return <div className="mx-auto max-w-md px-4 sm:px-6 py-16">Loading…</div>;
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 sm:px-6 py-10">
+        <div className="space-y-6">
+          <div>
+            <Skeleton variant="text" width="50%" className="h-8 mb-2" />
+            <SkeletonText lines={1} />
+          </div>
+          
+          <div className="space-y-6">
+            {/* Name field skeleton */}
+            <div>
+              <Skeleton variant="text" width="20%" className="h-4 mb-2" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+            </div>
+            
+            {/* Institution field skeleton */}
+            <div>
+              <Skeleton variant="text" width="25%" className="h-4 mb-2" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+              <SkeletonText lines={1} />
+            </div>
+            
+            {/* Options sections skeleton */}
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i}>
+                <Skeleton variant="text" width="30%" className="h-4 mb-2" />
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {Array.from({ length: 4 }).map((_, j) => (
+                    <SkeletonButton key={j} className="rounded-full" />
+                  ))}
+                </div>
+              </div>
+            ))}
+            
+            {/* Save button skeleton */}
+            <div className="flex justify-end">
+              <Skeleton variant="button" width="140px" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-2xl px-4 sm:px-6 py-10">
