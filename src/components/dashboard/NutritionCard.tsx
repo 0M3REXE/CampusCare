@@ -1,41 +1,61 @@
+'use client';
+
+import { useMemo } from 'react';
+import { Bar } from 'react-chartjs-2';
+import { ensureDashboardChartsRegistered } from '@/lib/charts';
+
+const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const CALORIES = [1820, 1940, 1760, 1895, 2010, 1955, 1880, 2055, 1990, 1875, 1740, 1930];
+
 export default function NutritionCard() {
-  const months = [
-    { label: 'Jan', h: 136 },
-    { label: 'Feb', h: 91 },
-    { label: 'Mar', h: 153 },
-    { label: 'Apr', h: 120 },
-    { label: 'May', h: 91 },
-    { label: 'Jun', h: 136 },
-    { label: 'Jul', h: 153 },
-    { label: 'Sep', h: 197 },
-    { label: 'Aug', h: 120 },
-    { label: 'Oct', h: 161 },
-    { label: 'Nov', h: 86 },
-    { label: 'Dec', h: 120 },
-  ];
+  ensureDashboardChartsRegistered();
+
+  const data = useMemo(() => ({
+    labels: MONTH_LABELS,
+    datasets: [
+      {
+        label: 'Daily average calories',
+        data: CALORIES,
+        backgroundColor: 'rgba(59, 130, 246, 0.75)',
+        borderRadius: 12,
+        borderSkipped: false,
+        maxBarThickness: 34,
+      },
+    ],
+  }), []);
+
+  const maxValue = Math.max(...CALORIES);
+  const options = useMemo(() => ({
+    scales: {
+      x: {
+        grid: { display: false, drawBorder: false },
+        ticks: { color: '#64748b', font: { size: 11 } },
+      },
+      y: {
+        grid: { color: 'rgba(148, 163, 184, 0.18)', drawTicks: false },
+        suggestedMax: maxValue + 200,
+        ticks: {
+          stepSize: 200,
+          callback: (value: number | string) => `${value}`,
+          color: '#64748b',
+        },
+      },
+    },
+  }), [maxValue]);
+
   return (
-    <section className="rounded-2xl border border-black/10 dark:border-white/10 bg-background/60 p-5">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Calories</h3>
-        <button className="text-sm rounded-full border border-black/10 dark:border-white/10 px-3 py-1">Month ▾</button>
+    <section className="rounded-2xl border border-black/10 bg-background/70 p-5 shadow-sm dark:border-white/10">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-semibold">Calorie balance</h3>
+          <p className="text-xs text-foreground/50">Average intake over the last 12 months</p>
+        </div>
+        <button className="rounded-full border border-black/10 px-3 py-1 text-sm font-medium text-foreground/70 transition hover:border-blue-500/40 hover:text-foreground dark:border-white/10">
+          Monthly
+        </button>
       </div>
-      <div className="mt-4 grid grid-cols-[34px_1fr] gap-4 items-end">
-        <div className="flex flex-col justify-between text-xs text-foreground/60 h-[222px]">
-          {[2000, 1000, 500, 100, 0].map(v => (
-            <div key={v}>{v}</div>
-          ))}
-        </div>
-        <div className="relative">
-          <div className="absolute left-0 right-0 top-[22px] h-px bg-black/10 dark:bg-white/10" />
-          <div className="flex items-end gap-6 h-[233px] pl-4">
-            {months.map((m) => (
-              <div key={m.label} className="flex flex-col items-center gap-2">
-                <div className="w-8 rounded-md bg-blue-600/70" style={{ height: m.h }} />
-                <div className="text-xs text-foreground/60">{m.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="mt-6 h-72">
+        <Bar data={data} options={options} />
       </div>
     </section>
   );
